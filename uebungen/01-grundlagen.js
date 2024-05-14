@@ -104,3 +104,23 @@ for (let i = 0; i < laufzeit; i++) {
     console.log("Endkapital nach Jahr " +( i+1) + "; " +  endkapital + "EUR.");     
 }
 
+
+console.log('Aufgabe 9');
+console.log('Wenn der Artikel Lebensmittel ist, dann ist die Mwst 7%, ansonsten 19%.');
+console.log('In Exel würde das so aussehen =wenn(A1=lebensmittel; 7;19)');
+
+let artikel = 'Lebensmittel';
+let MwstSatz = (artikel === "Lebensmittel") ? 7 : 19;
+
+// Der Ausdruck ist vergleichbar mit Excel. In den runden Klammern findet die Prüfung
+// auf wahr oder falsch statt. Wenn article === "Lebensmittel" wahr ist, wird der
+// Wert vor dem Doppelpunkt zurücktgegeben. Ansonsten der Wert hinter dem Doppelpunkt.
+// Anders als in Excel ist das einfache Gleichheitszeichen für eine Zuweisung reserviert
+// Für einen Vergleich, muss in Javascript in zwei oder drei Gleichheitszeichen bearbeitet werden. 
+
+console.log('Der Mehrwertsteuersatz für den Artikel ' + artikel + 'beträgt ' + MwstSatz + '%. '); 
+
+console.log('Aufgabe 10');
+console.log('Hausaufgabe: Eigene Aufgabe mit Wenn-Funktion / if-else-Ausdruck');
+
+let
