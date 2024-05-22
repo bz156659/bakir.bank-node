@@ -121,6 +121,86 @@ let MwstSatz = (artikel === "Lebensmittel") ? 7 : 19;
 console.log('Der Mehrwertsteuersatz für den Artikel ' + artikel + 'beträgt ' + MwstSatz + '%. '); 
 
 console.log('Aufgabe 10');
-console.log('Hausaufgabe: Eigene Aufgabe mit Wenn-Funktion / if-else-Ausdruck');
+console.log('Wenn der gesamtbetrag des Einkaufs größer oder gleich 100€ ist, beträgt der Rabatt 20%');
+console.log('Ansonsten gibt es keinen Rabatt');
 
-let
+// Die Variablen werden deklariert und der Gesamtbetrag mit dem Wert 120 initialisiert 
+let gesamtbetrag = 120;
+let rabatt; 
+
+// Die if-Kontrollstruktur kann zwei Fälle unterscheiden.
+if (gesamtbetrag >= 100){
+    // Wenn die Prüfung in den runden klammern wahr ist, wird der Wert 20 zugewiesen.
+    rabatt = 20;
+
+}else{
+    // Wenn die Prüfung in runden klammern unwahr ist, wird der Wert 0 zugewiesen.
+    rabatt = 0;
+
+}
+
+console.log('Bei einem Gesamtbetrag von ' + gesamtbetrag + 'Euro beträgt der Rabatt ' + rabatt + " Prozent.");
+
+console.log('Aufgabe 11');
+console.log('Wenn der gesamtbetrag des Einkaufs größer oder gleich 100€ ist, beträgt der Rabatt 20%');
+console.log('wenn der Gesamtbetrag des Einkaufs zwischen 50 und kleiner 100€ ist, beträgt der Rabatt 10');
+console.log('Ansonsten gibt es keinen Rabatt');
+
+gesamtbetrag = 120;
+rabatt; 
+
+// Hier werden drei Fälle unterschieden. Dazu muss die if-Kontrollstruktur geschaltet werden.
+if (gesamtbetrag >= 100){
+    rabatt = 20;
+}else{
+
+    if (gesamtbetrag >= 50){
+        rabatt = 10;
+    }else{
+        rabatt = 0; 
+    }
+
+}
+
+console.log('Bei einem Gesamtbetrag von ' + gesamtbetrag + 'Euro beträgt der Rabatt ' + rabatt + " Prozent.");
+
+
+console.log('Aufgabe 12');
+console.log('Wenn der gesamtbetrag des Einkaufs größer oder gleich 200€ ist, ist der Versand kostenlos.');
+console.log('wenn der Gesamtbetrag des Einkaufs zwischen 100 und kleiner 200€ ist, betragen Versankosten 5€');
+console.log('Ansonsten betragen die Versandkosten 10€');
+
+let  versandkosten;
+let einkaufswert = 110; 
+
+if (einkaufswert >= 200) {
+    versandkosten = 0; //Versandkostenfrei
+
+} else if (einkaufswert >= 100){
+versandkosten = 5; // Versandkosten 5€
+
+} else{
+    versandkosten = 10; // Versandkosten 10€
+
+}
+
+console.log('Bei einem Einkaufswert von ' + einkaufswert + 'Euro betragen die Versandkosten ' + versandkosten + " EURO.");
+
+
+console.log('Aufgabe 13');
+console.log('Frauen ab 18 zahlen 10€ Eintritt. Männer ab 18 zahlen 15€ Eintritt. Minderjährige zahlen 6€ ');
+
+let eintrittspreis;
+let alter = 10
+let geschlecht = 'm';
+
+
+if (alter < 18) {
+    eintrittspreis = 6; // Minderjährige
+} else if (alter >= 18 && geschlecht === 'weiblich') {
+    eintrittspreis = 10; // Frauen ab 18
+} else if (alter >= 18 && geschlecht === 'männlich') {
+    eintrittspreis = 15; // Männer ab 18
+} 
+
+console.log('Bei einem Alter von ' + alter + ' Jahren zahlt eine Person mit Geschlecht ' + geschlecht + eintrittspreis + 'EURO.');
