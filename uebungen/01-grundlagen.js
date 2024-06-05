@@ -204,3 +204,17 @@ if (alter < 18) {
 } 
 
 console.log('Bei einem Alter von ' + alter + ' Jahren zahlt eine Person mit Geschlecht ' + geschlecht + eintrittspreis + 'EURO.');
+
+console.log('Aufgabe 14'); 
+console.log('Wenn die Zahl kleiner als 5, dann negativ, wenn 5 größer dann positiv');
+
+let zahl = 4; // Du kannst diese Zahl ändern, um verschiedene Ergebnisse zu testen
+
+// Überprüfe, ob die Zahl positiv, negativ oder null ist
+if (zahl > 5) {
+  console.log("Die Zahl ist positiv.");
+} else if (zahl < 5) {
+  console.log("Die Zahl ist negativ.");
+} else {
+ 
+}
