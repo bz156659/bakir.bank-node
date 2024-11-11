@@ -17,6 +17,15 @@ const HOST = '0.0.0.0';
 
 // App
 const app = express();
+
+// Es wird der App bekanntgegeben, wo die styles zu finden sind.
+app.use(express.static('public'))
+
+
+
+
+
+
 app.get('/', (req, res) => {
 	// res ist die Antwort des Servers an den Browser.
 	//send() ist die Anweisung etwas an den Browser zu senden.
@@ -29,6 +38,17 @@ app.get('/', (req, res) => {
 	// eine HTML-Datei an den browser senden.
 	res.render('index.ejs',{}); 
 });
+
+
+// Wenn im Browser die Adresse... /agb aufgerufen wird, wird der Server aufgefordert, 
+// Die angesagte Seite an dem Browser zurückzugeben 
+// der Server arbeitet dazu die Funktion app.get ('agb)... ab.
+app.get('agb' , (req, res) => {
+
+	// Der Server gibt gerenderter EJS seite an den Browser zurück
+	res.render('agb.ejs' , {});
+
+}); 
 
 
 
@@ -45,4 +65,4 @@ console.log(`Running on http://${HOST}:${PORT}`);
 
 // Mit der Funktion require wird die Datei in den runden klammern eingelesen.
 // require('./uebungen/03-objekte.js');
-require('./Klausuren/Test20240930.js');
+// require('./Klausuren/Test20240930.js');

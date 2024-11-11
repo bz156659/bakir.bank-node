@@ -98,7 +98,7 @@ let zeugnis = new Zeugnis();
 zeugnis.Mathe = 5
 zeugnis.Deutsch = 3
 zeugnis.Mathe = 3
-zeugnis.Adresse "Josefstraße 10, 46325 Borken"
+zeugnis.Adresse 
 
 
 
@@ -124,8 +124,23 @@ zeugnis.Adresse "Josefstraße 10, 46325 Borken"
 // Beispiel der Anwendung von Math.min():
 // let x = Math.min(5, 10); --> Es werden 5 und 10 verglichen. x nimmt jetzt den Wert 5 an, da 5 der niedrigste der kommaseparierten Werte ist.
 
+let zeugnis = {
+    durchschnittsnote: 3.5, // Ihre Durchschnittsnote
+    klassenbeste: false
+};
 
+  
+let lisaNote = 3;
+let tomNote = 4;
+let maxNote = 5;
 
+if (zeugnis.durchschnittsnote < Math.min(lisaNote, tomNote, maxNote)) {
+    console.log("Ihre Durchschnittsnote ist schlechter als die aller anderen.");
+} else if (zeugnis.durchschnittsnote > Math.max(lisaNote, tomNote, maxNote)) {
+    console.log("Ihre Durchschnittsnote ist besser als die aller anderen.");
+} else {
+    console.log("Ihre Durchschnittsnote liegt zwischen den Noten der anderen.");
+}
 
 
 
@@ -159,7 +174,6 @@ console.log("Aufgabe 3")
 
 // 3c)
 // Berechnen Sie die MwSt in einer sprechenden Variablen. Geben Sie einen Anwortsatz auf der Konsole aus.
-
 
 
 
@@ -205,3 +219,38 @@ console.log("Aufgabe 4") // NUR KLAUSURSCHREIBER
 // Wenn Preis und Verbrauch gleich sind, dann entscheidet die Geschwindigkeit.
 // Wenn auch die Geschwindigkeit gleich ist, entscheidet die Leistung.
 // Geben Sie entsprechende Antworten auf der Kosnole aus.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
