@@ -2,6 +2,40 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
+class Kunde{
+	constructor(){
+		this.Nachname
+		this.Vorname
+		this.benutzername
+		this.Kennwort
+	}
+}
+
+let kunde = new Kunde();
+kunde.Nachname = "Kiff"
+kunde.Vorname = "Pit"
+kunde.Benutzername = "pk"
+kunde.Kennwort = "123"
+
+
+class kundenberater{
+	constructor(){
+		this.Nachname
+		this.Vorname
+		this.Telefonnummer
+		this.Mail
+		this.Bild
+
+	}
+}
+
+let kundenberater = new Kundenberater();
+kundenberater.Nachname = "Pass"
+kundenberater.Vorname = "Hildegard"
+kundenberater.Telefonnummer = "01227663270"
+kundenberater.Mail = "h.pass@gmx.de"
+kundenberater.Bild = "pass.jpg"
+
 
 'use strict';
 
