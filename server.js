@@ -1,3 +1,75 @@
+// Das sqlite3-Modul muss im Terminal installiert werden ;  npm install sqlite3 
+
+const sqlite3 = require('sqlite3').verbose(); // Importiert das sqlite3-Modul
+
+// Neue SQLite-Datenbankverbindung erstellen (Datei: bank.db)
+const db = new sqlite3.Database('./datenbank.db', (err) => {
+
+	// Wenn err ungleich null ist , dann wird die Fehlermeldung auf der Konsole ausgegeben. 
+	// Wenn err gleich null ist, dann wird die Erfolgsmeldung auf der Konsole ausgegeben. 
+
+    if (err) {
+        console.error('Fehler beim Öffnen der Datenbank:', err.message);
+    } else {
+        console.log('Verbindung zur SQLite-Datenbank hergestellt.');
+    }
+});
+
+// Tabelle "Kunde" anlegen, falls sie noch nicht existiert
+// Tabellen werden angelegt mt dem Befehl CREATE TABLE
+// IF NOT EXISTS sorgt dafür, dass die Tabelle nur einmal angelegt wird.
+// PRIMARY KEY ist der Primärschlüssel der Tabelle. Der Primärschlüssel ist dasjenige
+// Attribut, das den Datensatz eindeutig identifiziert.
+// AUTOINCREMENT sorgt dafür, dass der Primärschlüssel automatisch hochgezählt wird.
+// Für jedes Attribut muss der Datentyp angegeben werden.
+// TEXT ist ein Datentyp, der eine Zeichenkette speichert.
+// INTEGER ist ein Datentyp, der eine ganze Zahl speichert.
+// NOT NULL sorgt dafür, dass das Attribut nicht leer sein darf.
+
+db.serialize(() => {
+    db.run(`
+        CREATE TABLE IF NOT EXISTS Kunde (
+            KundenNr INTEGER PRIMARY KEY AUTOINCREMENT,
+            Nachname TEXT NOT NULL,
+            Vorname TEXT NOT NULL,
+            Wohnort TEXT,
+            PLZ TEXT,
+            Strasse TEXT,
+            Kennwort TEXT NOT NULL,
+            Benutzername TEXT NOT NULL
+        )
+    `);
+
+    // Beispielkunden einfügen (nur wenn Tabelle leer ist)
+	// Mit INSERT INTO wird ein Datensatz in die Tabelle eingefügt.
+	// VALUES gibt die Werte an, die in die Tabelle eingefügt werden.
+    db.get("SELECT COUNT(*) AS count FROM Kunde", (err, row) => {
+
+		// Wenn keine einzige Zeile gefunden wurde, dann wird ein Beispielkunde angelegt.
+        if (row.count === 0) {
+            db.run(`
+                INSERT INTO Kunde (Nachname, Vorname, Wohnort, PLZ, Strasse, Kennwort, Benutzername)
+                VALUES (?, ?, ?, ?, ?, ?, ?)
+            `, ["Muster", "Max", "Musterstadt", "12345", "Musterstraße 1", "passwort123", "maxmuster"]);
+            console.log("Beispielkunde wurde angelegt.");
+        }
+    });
+});
+
+// Alle Kunden aus der Tabelle "Kunde" auf der Konsole ausgeben
+db.all("SELECT * FROM Kunde", (err, rows) => {
+    if (err) {
+        console.error("Fehler beim Auslesen der Kunden:", err.message);
+    } else {
+        console.log("Alle Kunden in der Datenbank:");
+        rows.forEach((row) => {
+            console.log(row);
+        });
+    }
+});
+
+
+
 // Klassendefinition des Kunden
 class Kunde{
 	constructor(){
@@ -7,8 +79,7 @@ class Kunde{
 		this.Kennwort
 		// IstEingeloggt ist ein boolean.
 		// Der Wert ist entweder wahr oder falsch.
-		res.cookie('name', 'istAngemeldet', { maxAge: 900000, httpOnly: true });
-
+		this.IstEingeloggt
 	}
 }
 
@@ -55,26 +126,40 @@ const express = require('express');
 
 const bodyParser = require('body-parser');
 
+// Cookies sind kleine Textdateien, die beim Besuch von Webseiten auf dem lokalen Rechner
+// von Nutzern gespeichert werden. Beim erneuten Seitenbesuch können sie direkt an den Server 
+// gesendet werden. 
+// Cookies können notwendig sein oder z.B. der Werbung dienen.
+// Cookies können z.B. ganz konkret einen Warenkorb nach Tagen wieder anzeigen, obwohl 
+// der Nutzer sich bei dem Händler noch nicht registriert hat.
 // Der cookieparser ist für die Verarbeitung der cookies unserer App zuständig.
 // Mit dem cookieparser können wir cookies setzen und auslesen und löschen.
-
-const cookieParser = require('cookie-parser')   
-
-// Cookies sind kleine Textdateien, die von Websites auf deinem Computer gespeichert werden. 
-// Sie helfen, Einstellungen zu merken, den Besuch zu verfolgen oder personalisierte Inhalte anzuzeigen. 
-// Cookies können ganz konkret einen Warenkorb nach Tagen wieder anzeigen, obwohl der Nutzer sich bei dem Händler noch nicht regeristert haben. 
-// Man kann Cookies am Browser anzeigen, indem man F12 dück 
-// Weil man Cookies im Browser sehr einfach auslesen kann, kann man Cookies signieren. 
+// Man kann Cookies am Browser anzeigen, indem man F12 drückt.
+// Weil man Cookies im Browser sehr einfach auslesen kann, kann man Cookies signieren.
 
 
-// in der Banking - App sollen Cookies wie folgt eingesetzt werden: 
-// 1. wenn sich derKunde an der App anmeldet, wird ein Cookie in seinem Browser gespeichert 
-//    Der Cookie enthält seine Kundendaten 
-//    Immer wenn der Kunde nach der Anmeldung in der App einen Button drücktm werden, 
-//    seine Kundendaten vom Browser an den Server übergeben. Der server weiß dadruch,
-//    mit welchem Kunden er es zu tun hat. So ermöglichen wir, dass mehrere Kunden gleichzeitig 
-//    mit dem Server interagieren könne. 
+// In der Banking-App sollen Cookies wie folgt eingesetzt werden:
+//    Wenn sich der Kunde an der App anmeldet, wird ein Cookie in seinem Browser gespeichert.
+//    Der Cookie enthält seine Kundendaten.
+//    Immer, wenn der Kunde nach der Anmeldung in der App einen Button drückt, werden
+//    seine Kundendaten vom Browser an den Server übergeben. Der Server weiß dadurch, 
+//    mit welchem Kunden er es zu tun hat. So ermöglichen wir, dass mehrere Kunden gleichzeitig
+//    mit dem Server interagieren können.
 
+
+
+const cookieParser = require('cookie-parser')
+
+// Die Bibliothek email-validator prüft emails auf syntaktische Korrektheit.
+// Die Anforderungen an gültige Mails sind exakt festgelegt im RFC 5322. 
+
+const validator = require("email-validator");
+
+// Die Funktion validate wird auf das validator-Objekt aufgerufen.
+// Als Parameter wird eine Mail-Adresse an die Funktion übergeben.
+// Der Rückgabewert der Funktion ist true oder false.
+
+validator.validate("test@email.com"); // true
 
 // Die Anweisungen werden von oben nach unten abgearbeitet. Der Wert 3000 wird von rechts nach links 
 // zugewiesen an die Konstante namens PORT. Das einfache Gleichheitszeichen lässt sich also übersetzen
@@ -104,8 +189,12 @@ app.use(bodyParser.urlencoded({extended: true}))
 app.use(cookieParser())
 
 
-const secretKey ='mein_geheimer_schluessel'; 
-app
+// Geheimer Schlüssel für signierte Cookies
+const secretKey = 'mein_geheimer_schluessel';
+//app.use(cookieParser(secretKey));
+
+
+
 // Die app.get wird abgearbeitet, sobald die Index-Seite angesurft wird.
 app.get('/', (req, res) => {
 
@@ -171,12 +260,47 @@ app.get('/hilfe', (req, res) => {
 	}
 });
 
+app.post('/kontenuebersicht', (req, res) => {
+	
+	if(kunde.IstEingeloggt){
+
+		let kontonummer = req.body.Kontonummer;
+		console.log("kontonummer: " + kontonummer)
+
+		let bankleitzahl = "40154530"
+
+		let laenderkennung = "DE"
+		
+		let pruefziffer = IBANValidator.getCheckDigit(laenderkennung, bankleitzahl, kontonummer);
+		
+		let iban = laenderkennung + bankleitzahl + kontonummer;
+
+
+
+		// Wenn die Zugangsdaten korrekt sind, dann wird die angesurfte Seite gerendert.
+		res.render('kontenuebersicht.ejs',{
+			Kontonummer: "",
+			Meldung: ""
+		});
+
+	}else{
+		
+		// Wenn die Zugangsdaten nicht korrekt sind, dann wird die login-Seite gerendert.
+		res.render('login.ejs',{
+			Meldung: "Melden Sie sich zuerst an."
+		});
+	}
+});
+
 app.get('/kontenuebersicht', (req, res) => {
 	
 	if(kunde.IstEingeloggt){
 
 		// Wenn die Zugangsdaten korrekt sind, dann wird die angesurfte Seite gerendert.
-		res.render('kontenuebersicht.ejs',{});
+		res.render('kontenuebersicht.ejs',{
+			Kontonummer: "",
+			Meldung: ""
+		});
 
 	}else{
 		
@@ -189,11 +313,52 @@ app.get('/kontenuebersicht', (req, res) => {
 
 app.get('/profil', (req, res) => {
 	
-
 	if(kunde.IstEingeloggt){
 
 		// Wenn die Zugangsdaten korrekt sind, dann wird die angesurfte Seite gerendert.
-		res.render('profil.ejs',{});
+		res.render('profil.ejs',{
+			Meldung: "",
+			Email: kunde.Mail
+		});
+
+	}else{
+		
+		// Wenn die Zugangsdaten nicht korrekt sind, dann wird die login-Seite gerendert.
+		res.render('login.ejs',{
+			Meldung: "Melden Sie sich zuerst an."
+		});
+	}
+});
+
+app.post('/profil', (req, res) => {
+	
+	var meldung = "";
+
+	if(kunde.IstEingeloggt){
+
+		// Der Wert von Email wird vom Browser entgegengenommen, sobald der Kunde
+		// sein Profil ändern will.
+
+		let email = req.body.Email;
+		
+		// Die übergebene Adresse wird in die Validate-Funktion übergeben und geprüft
+
+		if(validator.validate(email)){
+
+			console.log("Gültige EMail.")
+			meldung = "EMail-adresse gültig";
+			kunde.Mail = email;
+
+		}else{
+			console.log("Ungültige EMail.")
+			meldung = "EMail-adresse ungültig";
+		}
+		
+		// Die profil-Seite wird gerendert.
+		res.render('profil.ejs',{
+			Meldung: meldung,
+			Email: ""
+		});
 
 	}else{
 		
@@ -373,22 +538,15 @@ app.post('/login', (req, res) => {
 		kunde.IstEingeloggt = true;
 		console.log("kunde.IstEingeloggt: " + kunde.IstEingeloggt)
 
-		//Wenn der Kunde seine credentials korrekt eingegeben hat, 
-		//wird der Cookie eingesetzt
+
+		// Wenn der Kunde seine Credentials korrekt eingegeben hat,
+		// wird ein cookie wird gesetzt.
+		// Um das ganze Kundenobjekt im Cookie speichern zu können, wird das 
+		// Kundenobjekt in eine Zeichenkette umgewandelt. Dazu wird die stringify-Funktion
+		// auf das JSON-Objekt aufgerufen.
+		res.cookie('istAngemeldetAls', JSON.stringify(kunde) , { maxAge: 900000, httpOnly: true, signed: false });
+		console.log("Das Kundenobjekt im Cookie gespeichert.")
 		
-
-
-
-
-
-
-
-
-
-
-
-
-		res.clearCookie('name')
 
 
 
